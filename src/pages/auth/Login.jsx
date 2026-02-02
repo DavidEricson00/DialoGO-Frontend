@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 export default function Login() {
-    const [showPassword, setShowPassword] = useState("Ver")
+    const [showPassword, setShowPassword] = useState(false)
 
   function handlelogin(e) {
     e.preventDefault()
