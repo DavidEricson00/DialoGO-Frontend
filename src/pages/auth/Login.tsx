@@ -1,12 +1,9 @@
-import { useState } from "react"
+import { useState } from "react";
 
 export default function Login() {
-    const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
-  function handlelogin(e) {
-    e.preventDefault()
-    console.log("Login")
-  }
+  function handleLogin(): void {}
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white font-sans text-zinc-900">
@@ -20,7 +17,7 @@ export default function Login() {
             <p className="text-zinc-500">Faça login para acessar sua conta</p>
           </header>
 
-          <form className="flex flex-col gap-5" onSubmit={handlelogin}>
+          <form className="flex flex-col gap-5" onSubmit={handleLogin}>
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-zinc-700">Usuário</label>
               <input 
