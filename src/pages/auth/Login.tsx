@@ -1,9 +1,26 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const { login } = useAuth()
 
-  function handleLogin(): void {}
+  async function handleLogin( e: React.FormEvent ){
+    e.preventDefault()
+    try {
+      await login(username, password)
+
+      navigate("/home", {replace: true})
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white font-sans text-zinc-900">
@@ -21,6 +38,8 @@ export default function Login() {
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-zinc-700">Usuário</label>
               <input 
+                value={username}
+                onChange={e => setUsername(e.target.value)}
                 type="text" 
                 className="w-full border border-zinc-300 rounded-lg px-4 py-2.5 bg-zinc-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
               />
@@ -38,6 +57,8 @@ export default function Login() {
                 </button>
                 </label>
                 <input
+                value={password || ""}
+                onChange={e => setPassword(e.target.value)}
                 type={showPassword ? "text" : "password"}
                 className="w-full border border-zinc-300 rounded-lg px-4 py-2.5 bg-zinc-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                 />
