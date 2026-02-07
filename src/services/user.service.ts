@@ -1,6 +1,6 @@
-import { LoginResponse } from "../types/LoginResponse"
-import { User } from "../types/User"
-import { authFetch } from "./authFetch.service"
+import { LoginResponse } from "../types/LoginResponse.ts"
+import { User } from "../types/User.ts"
+import { authFetch } from "./authFetch.service.ts"
 
 const API_URL = "http://localhost:3000"
 
