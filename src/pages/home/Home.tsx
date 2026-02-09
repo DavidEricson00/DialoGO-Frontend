@@ -1,7 +1,13 @@
+import Header from "../../components/layout/Header"
+
 export default function Home() {
     return(
         <>
-            <p>Home</p>
+            <Header/>
+            <div className="mt-38">
+                <p>Home</p>
+            </div>
+            
         </>
     )
 }
