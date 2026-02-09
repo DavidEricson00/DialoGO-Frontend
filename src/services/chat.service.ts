@@ -16,6 +16,13 @@ type CreateChatPayload = {
   password?: string;
 };
 
+export type GetChatsFilters = {
+  search?: string;
+  order?: "name" | "created_at";
+  direction?: "asc" | "desc";
+  hasPassword?: boolean;
+};
+
 export async function createChat(
   chat: CreateChatPayload
 ): Promise<Chat> {
@@ -35,25 +42,36 @@ export async function createChat(
   return response.json();
 }
 
-export async function getChats(): Promise<Chat[]> {
-  const response = await authFetch(`${API_URL}/chat`, {
+export async function getChats(
+  filters: GetChatsFilters = {}
+): Promise<Chat[]> {
+  const params = new URLSearchParams();
+
+  if (filters.search) {
+    params.set("search", filters.search);
+  }
+
+  if (filters.order) {
+    params.set("order", filters.order);
+  }
+
+  if (filters.direction) {
+    params.set("direction", filters.direction);
+  }
+
+  if (filters.hasPassword !== undefined) {
+    params.set("hasPassword", String(filters.hasPassword));
+  }
+
+  const queryString = params.toString();
+  const url = `${API_URL}/chat${queryString ? `?${queryString}` : ""}`;
+
+  const response = await authFetch(url, {
     method: "GET"
   });
 
   if (!response.ok) {
     throw new Error("Erro ao buscar chats");
-  }
-
-  return response.json();
-}
-
-export async function getChatById(chatId: string): Promise<Chat> {
-  const response = await authFetch(`${API_URL}/chat/${chatId}`, {
-    method: "GET"
-  });
-
-  if (!response.ok) {
-    throw new Error("Erro ao buscar chat");
   }
 
   return response.json();
