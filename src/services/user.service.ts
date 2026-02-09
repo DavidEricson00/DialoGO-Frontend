@@ -29,7 +29,7 @@ export async function loginUser(
 
 
 export async function createUser(
-    user: Omit<User, "id" | "avatar">
+    user: Omit<User, "id" | "avatar" | "created_at">
 ): Promise<User> {
     const response = await fetch(`${API_URL}/user/create`, {
         method: "POST",
