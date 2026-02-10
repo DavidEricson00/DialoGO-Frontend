@@ -3,7 +3,7 @@ import { Search, X } from "lucide-react";
 type ChatSearchBatProps = {
   text: string;
   searchText: (text: string) => void;
-  setSearchText: (text: string) => void;
+  setText: (text: string) => void;
   clearSearchBar: () => void;
 };
 
@@ -11,7 +11,7 @@ export function ChatSearchBar({
   text,
   searchText,
   clearSearchBar,
-  setSearchText,
+  setText,
 }: ChatSearchBatProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -32,7 +32,7 @@ export function ChatSearchBar({
         value={text}
         type="text"
         placeholder="Nome do chat..."
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={(e) => setText(e.target.value)}
         className="w-full pl-10 pr-20 py-2 bg-gray-100 border border-transparent rounded-full 
                    focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 
                    outline-none transition-all duration-200 text-sm"
