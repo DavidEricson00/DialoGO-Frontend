@@ -6,35 +6,35 @@ import MyChatsList from "../../components/chat/lists/MyChatsList"
 import ChatDiscoveryList from "../../components/chat/lists/ChatDiscoveryList"
 
 export default function Home() {
-    const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        getMe()
-            .then(data => setUser(data))
-            .catch(err => console.error(err))
-    })
+  useEffect(() => {
+    getMe()
+      .then((data) => setUser(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-    function openUserMenu(){
-        console.log("Abrir menu")
-    }
+  return (
+    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+      {user && (
+        <div className="shrink-0 z-50">
+          <Header user={user} onClick={() => console.log("Menu")} />
+        </div>
+      )}
 
-    return(
-        <>
-            {user && (
-                <Header
-                    user={user}
-                    onClick={openUserMenu}
-                />
-            )}
-            <div className="mt-24 h-[calc(100vh-6rem)] grid grid-cols-4">
-                <div className="col-span-1 border-r">
-                    <MyChatsList />
-                </div>
+      <div className="flex-1 flex pt-20 overflow-hidden">
+        
+        <aside className="hidden lg:block w-80 h-full border-r border-gray-200 bg-white shrink-0">
+          <MyChatsList />
+        </aside>
 
-                <div className="col-span-3">
-                    <ChatDiscoveryList />
-                </div>
-            </div>
-        </>
-    )
+        <main className="flex-1 h-full overflow-y-auto">
+          <div className="max-w-full mx-auto p-8">
+            <ChatDiscoveryList />
+          </div>
+        </main>
+        
+      </div>
+    </div>
+  );
 }
