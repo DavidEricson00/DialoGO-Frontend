@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { ChatSearchBar } from "../../layout/ChatSearchBar";
 import ChatFilterController from "../../layout/ChatFilterController";
 import { ChatListItem } from "../../../types/Chat";
-import { getChats } from "../../../services/chat.service";
+import { getChats, joinChat } from "../../../services/chat.service";
 import ChatDiscoveryCard from "../cards/ChatDiscoveryCard";
+import JoinChatModal from "../../modals/JoinChatModal";
 import { Loader2, MessageSquareOff } from "lucide-react";
 
 type SortOption = "date" | "name";
@@ -16,6 +17,9 @@ export default function ChatDiscoveryList() {
   const [hasPassword, setHasPassword] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+  const [selectedChat, setSelectedChat] = useState<ChatListItem | null>(null);
+  const [chatPassword, setChatPassword] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -33,33 +37,47 @@ export default function ChatDiscoveryList() {
     }
   }
 
+  function handleJoinChat(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedChat) return;
+
+    const passwordToSend =
+      selectedChat.has_password ? chatPassword : undefined;
+
+    joinChat(selectedChat.id, passwordToSend);
+    setSelectedChat(null);
+    setChatPassword("");
+  }
+
+  function openChatAction(chat: ChatListItem) {
+    setSelectedChat(chat);
+    setChatPassword("");
+  }
+
   function searchText(query: string) {
     console.log("Searching:", query, { hasPassword, sortBy, sortDirection });
   }
 
-  function clearSearchBar() {
-    setText("");
-  }
-
-  function applyFilters() {
-    searchText(text);
-  }
-
-  function enterChat(id: string) {
-    console.log("Entrando no chat:", id);
-  }
-
   return (
     <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
+      {selectedChat && (
+        <JoinChatModal
+          chat={selectedChat}
+          password={chatPassword}
+          onPasswordChange={setChatPassword}
+          joinChat={handleJoinChat}
+          onClose={() => setSelectedChat(null)}
+        />
+      )}
+
       <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
-        
         <div className="flex-1 w-full order-2 lg:order-1">
           <div className="mb-6">
             <ChatSearchBar
               text={text}
               searchText={searchText}
               setText={setText}
-              clearSearchBar={clearSearchBar}
+              clearSearchBar={() => setText("")}
             />
           </div>
 
@@ -75,7 +93,7 @@ export default function ChatDiscoveryList() {
                   <ChatDiscoveryCard
                     key={chat.id}
                     chat={chat}
-                    enterChat={() => enterChat(chat.id)}
+                    enterChat={() => openChatAction(chat)}
                   />
                 ))}
               </div>
@@ -97,10 +115,9 @@ export default function ChatDiscoveryList() {
             onSortChange={setSortBy}
             onSortDirectionChange={setSortDirection}
             onHasPasswordToggle={() => setHasPassword(!hasPassword)}
-            applyFilters={applyFilters}
+            applyFilters={() => searchText(text)}
           />
         </aside>
-
       </div>
     </div>
   );
