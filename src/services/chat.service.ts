@@ -112,9 +112,14 @@ export async function deleteChat(chatId: string): Promise<void> {
   }
 }
 
-export async function joinChat(chatId: string): Promise<void> {
+export async function joinChat(chatId: string, password?: string): Promise<void> {
+  const body = password
+    ? JSON.stringify({ password })
+    : undefined
+
   const response = await authFetch(`${API_URL}/chat/join/${chatId}`, {
-    method: "POST"
+    method: "POST",
+    body
   })
 
   if (!response.ok) {
