@@ -1,6 +1,6 @@
 import { Lock, Settings2 } from "lucide-react";
 
-type SortOption = "date" | "name";
+type SortOption = "date" | "name" | "users";
 type SortDirection = "asc" | "desc";
 
 type ChatFilterControllerProps = {
@@ -54,6 +54,7 @@ export default function ChatFilterController({
             >
               <option value="date">Data</option>
               <option value="name">Nome</option>
+              <option value="users">Usuários</option>
             </select>
             <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-[10px]">
               ▼
