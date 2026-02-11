@@ -17,7 +17,7 @@ export default function ChatDiscoveryCard({
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors truncate max-w-37.5 xs:max-w-[200px] md:max-w-[300px] lg:max-w-none">
+          <h3 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors truncate max-w-37.5 xs:max-w-[200px] md:max-w-75 lg:max-w-none">
             {chat.name}
           </h3>
           
@@ -34,8 +34,10 @@ export default function ChatDiscoveryCard({
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 line-clamp-2 md:line-clamp-1 italic">
-          {chat.description}
+        <p className="text-sm text-gray-500 italic w-full wrap-break-word">
+          {(chat.description || "").length > 64 
+            ? `${(chat.description || "").slice(0, 64)}...` 
+            : chat.description}
         </p>
       </div>
 
