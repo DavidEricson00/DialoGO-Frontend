@@ -1,6 +1,67 @@
+import { useEffect, useState } from "react";
+import { MessageSquare, Loader2 } from "lucide-react";
+import { ChatListItem } from "../../../types/Chat";
+import { getUserChats } from "../../../services/chat.service";
+import MyChatsCard from "../cards/MyChatsCard";
+
 export default function MyChatsList() {
-    return(
-        <div className="border-black">
+  const [chats, setChats] = useState<ChatListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    setLoading(true);
+    try {
+      const response = await getUserChats();
+      setChats(response);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function openChatAction(id: string) {
+    console.log("Abrindo chat", id);
+  }
+
+return (
+    <div className="flex flex-col h-full bg-white">
+      <div className="p-5 border-b border-gray-100 shrink-0">
+        <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <MessageSquare className="text-blue-600" size={20} />
+          Meus Chats
+        </h2>
+      </div>
+
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="p-2 space-y-1">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+              <Loader2 className="animate-spin mb-2" size={24} />
+            </div>
+          ) : chats.length > 0 ? (
+            chats.map((chat) => (
+              <MyChatsCard
+                key={chat.id}
+                chat={chat}
+                openChat={() => console.log(chat.id)}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+              <div className="bg-gray-50 p-4 rounded-full mb-4">
+                <MessageSquare size={32} className="text-gray-300" />
+              </div>
+              <p className="text-sm font-medium text-gray-500">Nenhum chat</p>
+              <p className="text-xs text-gray-400 mt-1">Entre em um chat para listá-lo aqui.</p>
+            </div>
+          )}
         </div>
-    )
+      </div>
+    </div>
+  );
 }
