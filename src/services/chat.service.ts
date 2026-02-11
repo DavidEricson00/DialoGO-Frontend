@@ -18,7 +18,7 @@ type CreateChatPayload = {
 
 export type GetChatsFilters = {
   search?: string
-  order?: "name" | "created_at"
+  order?: "name" | "created_at" | "users_count"
   direction?: "asc" | "desc"
   hasPassword?: boolean
 }
@@ -42,7 +42,7 @@ export async function createChat(
   return response.json()
 }
 
-export async function getChats(
+export async function getAvailableChats(
   filters: GetChatsFilters = {}
 ): Promise<ChatListItem[]> {
   const params = new URLSearchParams()
@@ -67,6 +67,16 @@ export async function getChats(
 
   return response.json()
 }
+
+export async function getUserChats(
+): Promise<ChatListItem[]> {
+  const response = await authFetch(`${API_URL}/chat/me`, {
+    method: "GET"
+  })
+
+  return response.json()
+}
+
 
 export async function getChatById(
   chatId: string
