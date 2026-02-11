@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { ChatSearchBar } from "../../layout/ChatSearchBar";
 import ChatFilterController from "../../layout/ChatFilterController";
 import { ChatListItem } from "../../../types/Chat";
-import { getChats, joinChat } from "../../../services/chat.service";
+import { getAvailableChats, joinChat } from "../../../services/chat.service";
 import ChatDiscoveryCard from "../cards/ChatDiscoveryCard";
 import JoinChatModal from "../../modals/JoinChatModal";
 import { Loader2, MessageSquareOff } from "lucide-react";
 
-type SortOption = "date" | "name";
+type SortOption = "date" | "name" | "users";
 type SortDirection = "asc" | "desc";
 
 export default function ChatDiscoveryList() {
@@ -28,7 +28,7 @@ export default function ChatDiscoveryList() {
   async function fetchData() {
     setLoading(true);
     try {
-      const response = await getChats();
+      const response = await getAvailableChats();
       setChats(response);
     } catch (err) {
       console.error(err);
@@ -49,7 +49,7 @@ export default function ChatDiscoveryList() {
     setChatPassword("");
   }
 
-  function openChatAction(chat: ChatListItem) {
+  function enterChatAction(chat: ChatListItem) {
     setSelectedChat(chat);
     setChatPassword("");
   }
@@ -93,7 +93,7 @@ export default function ChatDiscoveryList() {
                   <ChatDiscoveryCard
                     key={chat.id}
                     chat={chat}
-                    enterChat={() => openChatAction(chat)}
+                    enterChat={() => enterChatAction(chat)}
                   />
                 ))}
               </div>
