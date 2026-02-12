@@ -27,7 +27,6 @@ export async function loginUser(
     return response.json()
 }
 
-
 export async function createUser(
     user: Omit<User, "id" | "avatar" | "created_at">
 ): Promise<User> {
@@ -42,17 +41,18 @@ export async function createUser(
         })
     })
 
+    const data = await response.json()
+
     if (!response.ok) {
-        throw new Error("Erro ao cadastrar usuário")
+        throw new Error(data.message || "Erro ao cadastrar usuário")
     }
 
-    return response.json()
+    return data
 }
 
 export async function getMe(): Promise<User> {
     const response = await authFetch(`${API_URL}/user/me`)
 
-    
     if (!response.ok) {
         throw new Error("Não autenticado")
     }
