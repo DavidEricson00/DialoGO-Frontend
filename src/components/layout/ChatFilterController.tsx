@@ -82,7 +82,7 @@ export default function ChatFilterController({
 
       <button
         onClick={applyFilters}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-all shadow-md active:scale-[0.98] mt-2"
+        className="cursor-pointer w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-all shadow-md active:scale-[0.98] mt-2"
       >
         Aplicar Filtros
       </button>
