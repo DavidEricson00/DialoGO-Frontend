@@ -1,3 +1,4 @@
+import { AvatarType } from "../types/AvatarType.ts"
 import { LoginResponse } from "../types/LoginResponse.ts"
 import { User } from "../types/User.ts"
 import { authFetch } from "./authFetch.service.ts"
@@ -7,6 +8,12 @@ const API_URL = "http://localhost:3000"
 type LoginPayload = {
     username: string
     password: string
+}
+
+type UpdateUserPayLoad = {
+    username?: string
+    password?: string
+    avatar?: AvatarType
 }
 
 export async function loginUser(
@@ -58,4 +65,23 @@ export async function getMe(): Promise<User> {
     }
 
     return response.json()
+}
+
+export async function updateUser(
+    user: UpdateUserPayLoad
+): Promise<User> {
+    const response = await authFetch(`${API_URL}/user`, {
+        method: "PATCH",
+        body: JSON.stringify({
+            username: user.username,
+            password: user.password,
+            avatar: user.avatar
+        })
+    })
+
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar chat")
+  }
+
+  return response.json()
 }
