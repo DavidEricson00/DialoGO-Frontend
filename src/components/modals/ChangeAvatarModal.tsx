@@ -76,7 +76,7 @@ export default function ChangeAvatarModal({
         <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="cursor-pointer px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200 rounded-xl transition-colors"
+            className="cursor-pointer px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-300 rounded-xl transition-colors"
           >
             Cancelar
           </button>

@@ -3,6 +3,7 @@ import { User } from "../../types/User";
 import { getAvatarPath } from "../../utils/getAvatarPath";
 import ProfileDropdown from "../layout/ProfileDropdown";
 import ChangeAvatarModal from "../modals/ChangeAvatarModal";
+import ChangeUsernameModal from "../modals/ChangeUsernameModal";
 import { AvatarType } from "../../types/AvatarType";
 
 type HeaderProps = {
@@ -11,18 +12,28 @@ type HeaderProps = {
 
 export default function Header({ user }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<AvatarType>(user.avatar);
+
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
+  const [newUsername, setNewUsername] = useState(user.username);
 
   useEffect(() => {
     setSelectedAvatar(user.avatar);
   }, [user.avatar]);
 
-  function handleChangeUsername() {
+  useEffect(() => {
+    setNewUsername(user.username);
+  }, [user.username]);
+
+  function handleOpenUsernameModal() {
     setIsDropdownOpen(false);
+    setNewUsername(user.username);
+    setIsUsernameModalOpen(true);
   }
 
-  function handleChangeAvatar() {
+  function handleOpenAvatarModal() {
     setIsDropdownOpen(false);
     setIsAvatarModalOpen(true);
   }
@@ -34,6 +45,11 @@ export default function Header({ user }: HeaderProps) {
   function handleUpdateAvatar() {
     console.log("Novo avatar:", selectedAvatar);
     setIsAvatarModalOpen(false);
+  }
+
+  function handleUpdateUsername() {
+    console.log("Novo username:", newUsername);
+    setIsUsernameModalOpen(false);
   }
 
   return (
@@ -67,8 +83,8 @@ export default function Header({ user }: HeaderProps) {
 
           {isDropdownOpen && (
             <ProfileDropdown
-              onChangeUsername={handleChangeUsername}
-              onChangeAvatar={handleChangeAvatar}
+              onChangeUsername={handleOpenUsernameModal}
+              onChangeAvatar={handleOpenAvatarModal}
               onLogout={handleLogout}
             />
           )}
@@ -81,6 +97,14 @@ export default function Header({ user }: HeaderProps) {
         selectedAvatar={selectedAvatar}
         onSelectAvatar={setSelectedAvatar}
         updateAvatar={handleUpdateAvatar}
+      />
+
+      <ChangeUsernameModal
+        isOpen={isUsernameModalOpen}
+        onClose={() => setIsUsernameModalOpen(false)}
+        username={newUsername}
+        onUsernameChange={setNewUsername}
+        changeUsername={handleUpdateUsername}
       />
     </>
   );
