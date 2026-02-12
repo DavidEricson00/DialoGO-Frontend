@@ -3,10 +3,16 @@ import { MessageSquare, Loader2, PlusCircle } from "lucide-react";
 import { ChatListItem } from "../../../types/Chat";
 import { getUserChats } from "../../../services/chat.service";
 import MyChatsCard from "../cards/MyChatsCard";
+import CreateChatModal from "../../modals/CreateChatModal";
 
 export default function MyChatsList() {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chatName, setChatName] = useState("");
+  const [chatDescription, setChatDescription] = useState("");
+  const [chatPassword, setChatPassword] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -28,54 +34,82 @@ export default function MyChatsList() {
     console.log("Abrindo chat", id);
   }
 
-  function createChatAction() {
-    console.log("Criando chat");
+  function handleOpenModal() {
+    setChatName("");
+    setChatDescription("");
+    setChatPassword("");
+    setIsModalOpen(true);
+  }
+
+  function handleCreateChat() {
+    console.log("Dados do novo chat:", {
+      name: chatName,
+      description: chatDescription,
+      password: chatPassword,
+    });
+    
+    setIsModalOpen(false);
+    fetchData(); 
   }
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="p-5 border-b border-gray-100 shrink-0">
-        <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-          <MessageSquare className="text-blue-600" size={20} />
-          Meus Chats
-        </h2>
-      </div>
+    <>
+      <div className="flex flex-col h-full bg-white">
+        <div className="p-5 border-b border-gray-100 shrink-0">
+          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <MessageSquare className="text-blue-600" size={20} />
+            Meus Chats
+          </h2>
+        </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="p-2 space-y-1">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-10 text-gray-400">
-              <Loader2 className="animate-spin mb-2" size={24} />
-            </div>
-          ) : chats.length > 0 ? (
-            chats.map((chat) => (
-              <MyChatsCard
-                key={chat.id}
-                chat={chat}
-                openChat={() => openChatAction(chat.id)}
-              />
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-              <div className="bg-gray-50 p-4 rounded-full mb-4">
-                <MessageSquare size={32} className="text-gray-300" />
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="p-2 space-y-1">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                <Loader2 className="animate-spin mb-2" size={24} />
               </div>
-              <p className="text-sm font-medium text-gray-500">Nenhum chat</p>
-              <p className="text-xs text-gray-400 mt-1">Entre em um chat para listá-lo aqui.</p>
-            </div>
-          )}
+            ) : chats.length > 0 ? (
+              chats.map((chat) => (
+                <MyChatsCard
+                  key={chat.id}
+                  chat={chat}
+                  openChat={() => openChatAction(chat.id)}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+                <div className="bg-gray-50 p-4 rounded-full mb-4">
+                  <MessageSquare size={32} className="text-gray-300" />
+                </div>
+                <p className="text-sm font-medium text-gray-500">Nenhum chat</p>
+                <p className="text-xs text-gray-400 mt-1">Entre em um chat para listá-lo aqui.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-gray-100 shrink-0">
+          <button
+            onClick={handleOpenModal}
+            className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-blue-100"
+          >
+            <PlusCircle size={20} />
+            Criar chat
+          </button>
         </div>
       </div>
 
-      <div className="p-4 border-t border-gray-100 shrink-0">
-        <button
-          onClick={createChatAction}
-          className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-blue-100"
-        >
-          <PlusCircle size={20} />
-          Criar chat
-        </button>
-      </div>
-    </div>
+      <CreateChatModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        name={chatName}
+        onNameChange={setChatName}
+        description={chatDescription}
+        onDescriptionChange={setChatDescription}
+        password={chatPassword}
+        onPasswordChange={setChatPassword}
+        createChat={handleCreateChat}
+      />
+    </>
   );
 }
