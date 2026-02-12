@@ -7,6 +7,7 @@ import ChangeUsernameModal from "../modals/ChangeUsernameModal";
 import { AvatarType } from "../../types/AvatarType";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { updateUser } from "../../services/user.service";
 
 type HeaderProps = {
   user: User;
@@ -47,16 +48,33 @@ export default function Header({ user }: HeaderProps) {
     logout();
     navigate("/login", { replace: true });
   }
-
-  function handleUpdateAvatar() {
-    console.log("Novo avatar:", selectedAvatar);
-    setIsAvatarModalOpen(false);
+  async function handleUpdateUsername() {
+    try {
+      const updatedUser = await updateUser({
+        username: newUsername
+      });
+      
+    } catch(err){
+      console.log(err)
+    } finally {
+      setIsAvatarModalOpen(false);
+      setIsUsernameModalOpen(false);
+    }
   }
 
-  function handleUpdateUsername() {
-    console.log("Novo username:", newUsername);
-    setIsUsernameModalOpen(false);
-  }
+
+  async function handleUpdateAvatar() {
+    try {
+        const updatedUser = await updateUser({
+          avatar: selectedAvatar
+        })
+
+      } catch(err){
+        console.log(err)
+      } finally {
+        setIsAvatarModalOpen(false);
+      }
+    }
 
   return (
     <>

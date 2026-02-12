@@ -18,7 +18,7 @@ export default function Home() {
     <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
       {user && (
         <div className="shrink-0 z-50">
-          <Header user={user} onClick={() => console.log("Menu")} />
+          <Header user={user} />
         </div>
       )}
 
