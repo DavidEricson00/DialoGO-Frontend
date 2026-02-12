@@ -10,10 +10,15 @@ type LoginPayload = {
     password: string
 }
 
-type UpdateUserPayLoad = {
+type UpdateUserPayload = {
     username?: string
     password?: string
     avatar?: AvatarType
+}
+
+type CreateUserPayload = {
+    username: string
+    password: string
 }
 
 export async function loginUser(
@@ -35,7 +40,7 @@ export async function loginUser(
 }
 
 export async function createUser(
-    user: Omit<User, "id" | "avatar" | "created_at">
+    user: CreateUserPayload
 ): Promise<User> {
     const response = await fetch(`${API_URL}/user/create`, {
         method: "POST",
@@ -68,7 +73,7 @@ export async function getMe(): Promise<User> {
 }
 
 export async function updateUser(
-    user: UpdateUserPayLoad
+    user: UpdateUserPayload
 ): Promise<User> {
     const response = await authFetch(`${API_URL}/user`, {
         method: "PATCH",
@@ -80,7 +85,7 @@ export async function updateUser(
     })
 
   if (!response.ok) {
-    throw new Error("Erro ao atualizar chat")
+    throw new Error("Erro ao atualizar usuáro")
   }
 
   return response.json()
