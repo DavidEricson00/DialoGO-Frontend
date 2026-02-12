@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MessageSquare, Loader2 } from "lucide-react";
+import { MessageSquare, Loader2, PlusCircle } from "lucide-react";
 import { ChatListItem } from "../../../types/Chat";
 import { getUserChats } from "../../../services/chat.service";
 import MyChatsCard from "../cards/MyChatsCard";
@@ -28,7 +28,11 @@ export default function MyChatsList() {
     console.log("Abrindo chat", id);
   }
 
-return (
+  function createChatAction() {
+    console.log("Criando chat");
+  }
+
+  return (
     <div className="flex flex-col h-full bg-white">
       <div className="p-5 border-b border-gray-100 shrink-0">
         <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -48,7 +52,7 @@ return (
               <MyChatsCard
                 key={chat.id}
                 chat={chat}
-                openChat={() => console.log(chat.id)}
+                openChat={() => openChatAction(chat.id)}
               />
             ))
           ) : (
@@ -61,6 +65,16 @@ return (
             </div>
           )}
         </div>
+      </div>
+
+      <div className="p-4 border-t border-gray-100 shrink-0">
+        <button
+          onClick={createChatAction}
+          className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-blue-100"
+        >
+          <PlusCircle size={20} />
+          Criar chat
+        </button>
       </div>
     </div>
   );

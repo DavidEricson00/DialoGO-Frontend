@@ -8,7 +8,7 @@ type MyChatsCardProps = {
 
 export default function MyChatsCard({ 
   chat, 
-  openChat 
+  openChat,
 }: MyChatsCardProps) {
   return (
     <div
