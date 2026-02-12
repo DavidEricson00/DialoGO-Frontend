@@ -1,31 +1,62 @@
-import { User } from "../../types/User"
-import { getAvatarPath } from "../../utils/getAvatarPath"
+import { useState } from "react";
+import { User } from "../../types/User";
+import { getAvatarPath } from "../../utils/getAvatarPath";
+import ProfileDropdown from "../layout/ProfileDropdown";
 
 type HeaderProps = {
-    user: User,
-    onClick?: () => void
-}
+    user: User;
+};
 
-export default function Header({ user, onClick }: HeaderProps) {
+export default function Header({ user }: HeaderProps) {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    function handleChangeUsername() {
+        console.log("Função: Mudar nome de usuário");
+        setIsDropdownOpen(false);
+    }
+
+    function handleChangeAvatar() {
+        console.log("Função: Mudar avatar");
+        setIsDropdownOpen(false);
+    }
+
+    function handleLogout() {
+        console.log("Função: Logout");
+        setIsDropdownOpen(false);
+    }
+
     return (
         <header className="fixed left-0 top-0 w-full h-24 bg-blue-600 text-white flex flex-row justify-between items-center px-10 shadow-lg z-50">
-            <div className="bg-blue-700/50 py-2 px-4 rounded-lg border border-blue-200">
+            <div className="cursor-default bg-blue-700/50 py-2 px-4 rounded-lg border border-blue-200">
                 <h1 className="text-xl font-bold tracking-wider">DialoGO</h1>
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-1 group cursor-pointer">
-                <div className="relative" onClick={onClick}>
-                    <img 
-                        src={getAvatarPath(user.avatar)}
-                        alt="Perfil" 
-                        className="w-12 h-12 rounded-full object-cover border-3 border-white/50 group-hover:border-white transition-all"
-                    />
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-blue-400 rounded-full"></span>
+            <div className="relative">
+                <div 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex flex-col items-center justify-center gap-1 group cursor-pointer select-none"
+                >
+                    <div className="relative transition-transform duration-200 active:scale-95">
+                        <img 
+                            src={getAvatarPath(user.avatar)}
+                            alt="Perfil" 
+                            className={`w-12 h-12 rounded-full object-cover border-3 transition-all ${isDropdownOpen ? 'border-white ring-4 ring-blue-400/50' : 'border-white/50 group-hover:border-white'}`}
+                        />
+                        <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-blue-600 rounded-full"></span>
+                    </div>
+                    <p className="text-xs font-medium text-blue-100 group-hover:text-white transition-colors">
+                        {user.username}
+                    </p>
                 </div>
-                <p className="text-xs font-medium text-blue-100 group-hover:text-white transition-colors">
-                    {user.username}
-                </p>
+
+                {isDropdownOpen && (
+                    <ProfileDropdown 
+                        onChangeUsername={handleChangeUsername}
+                        onChangeAvatar={handleChangeAvatar}
+                        onLogout={handleLogout}
+                    />
+                )}
             </div>
         </header>
-    )
+    );
 }
