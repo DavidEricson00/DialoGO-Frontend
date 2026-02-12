@@ -5,6 +5,8 @@ import ProfileDropdown from "../layout/ProfileDropdown";
 import ChangeAvatarModal from "../modals/ChangeAvatarModal";
 import ChangeUsernameModal from "../modals/ChangeUsernameModal";
 import { AvatarType } from "../../types/AvatarType";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 type HeaderProps = {
   user: User;
@@ -18,6 +20,9 @@ export default function Header({ user }: HeaderProps) {
 
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [newUsername, setNewUsername] = useState(user.username);
+
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSelectedAvatar(user.avatar);
@@ -37,9 +42,10 @@ export default function Header({ user }: HeaderProps) {
     setIsDropdownOpen(false);
     setIsAvatarModalOpen(true);
   }
-
   function handleLogout() {
     setIsDropdownOpen(false);
+    logout();
+    navigate("/login", { replace: true });
   }
 
   function handleUpdateAvatar() {
