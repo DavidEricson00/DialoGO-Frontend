@@ -54,12 +54,10 @@ export default function Header({ user }: HeaderProps) {
       await updateUserProfile({
         username: newUsername,
       });
-      
-    } catch(err){
-      console.log(err)
-    } finally {
-      setIsAvatarModalOpen(false);
       setIsUsernameModalOpen(false);
+    } catch (err: any) {
+      console.error("Erro ao atualizar username:", err);
+      throw err; 
     }
   }
 

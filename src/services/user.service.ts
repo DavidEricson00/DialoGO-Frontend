@@ -82,11 +82,12 @@ export async function updateUser(
             password: user.password,
             avatar: user.avatar
         })
-    })
+    });
+    const result = await response.json();
 
-  if (!response.ok) {
-    throw new Error("Erro ao atualizar usuáro")
-  }
+    if (!response.ok) {
+        throw new Error(result.message || "Erro ao atualizar usuário");
+    }
 
-  return response.json()
+    return result;
 }
