@@ -1,18 +1,10 @@
-import { useEffect, useState } from "react"
 import Header from "../../components/layout/Header"
-import { User } from "../../types/User"
-import { getMe } from "../../services/user.service"
 import MyChatsList from "../../components/chat/lists/MyChatsList"
 import ChatDiscoveryList from "../../components/chat/lists/ChatDiscoveryList"
+import { useAuth } from "../../context/AuthContext"
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    getMe()
-      .then((data) => setUser(data))
-      .catch((err) => console.error(err));
-  }, []);
+  const { user } = useAuth(); 
 
   return (
     <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">

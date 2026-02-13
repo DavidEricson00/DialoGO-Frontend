@@ -1,12 +1,20 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import { loginUser } from "../services/user.service"
+import { loginUser, updateUser } from "../services/user.service"
 import { User } from "../types/User"
+import { AvatarType } from "../types/AvatarType"
+
+type UpdateUserPayload = {
+    username?: string
+    password?: string
+    avatar?: AvatarType
+}
 
 type AuthContextType = {
     user: User | null
     token: string | null
     login: (username: string, password: string) => Promise<void>
     logout: () => void
+    updateUserProfile: (data: UpdateUserPayload) => Promise<void>
     isAuthenticated: boolean
     loading: boolean
 }
@@ -30,17 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false)
     }, [])
 
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem("token")
-        const storedUser = localStorage.getItem("user")
-
-        if (storedToken && storedUser) {
-            setToken(storedToken)
-            setUser(JSON.parse(storedUser))
-        }
-    }, [])
-
     async function login(username: string, password: string) {
         const { token, user } = await loginUser({ username, password })
 
@@ -58,6 +55,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("user")
     }
 
+    async function updateUserProfile(data: UpdateUserPayload) {
+        console.log(data)
+        const updatedUser = await updateUser(data)
+        
+        setUser(updatedUser)
+        localStorage.setItem("user", JSON.stringify(updatedUser))
+    }
+
     return (
         <AuthContext.Provider
             value={{
@@ -65,6 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 token,
                 login,
                 logout,
+                updateUserProfile,
                 isAuthenticated: !!token,
                 loading
             }}

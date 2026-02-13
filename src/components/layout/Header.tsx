@@ -7,7 +7,6 @@ import ChangeUsernameModal from "../modals/ChangeUsernameModal";
 import { AvatarType } from "../../types/AvatarType";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { updateUser } from "../../services/user.service";
 
 type HeaderProps = {
   user: User;
@@ -22,7 +21,7 @@ export default function Header({ user }: HeaderProps) {
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [newUsername, setNewUsername] = useState(user.username);
 
-  const { logout } = useAuth();
+  const { logout, updateUserProfile } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,15 +42,17 @@ export default function Header({ user }: HeaderProps) {
     setIsDropdownOpen(false);
     setIsAvatarModalOpen(true);
   }
+  
   function handleLogout() {
     setIsDropdownOpen(false);
     logout();
     navigate("/login", { replace: true });
   }
+
   async function handleUpdateUsername() {
     try {
-      const updatedUser = await updateUser({
-        username: newUsername
+      await updateUserProfile({
+        username: newUsername,
       });
       
     } catch(err){
@@ -62,10 +63,9 @@ export default function Header({ user }: HeaderProps) {
     }
   }
 
-
   async function handleUpdateAvatar() {
     try {
-        const updatedUser = await updateUser({
+        await updateUserProfile({
           avatar: selectedAvatar
         })
 
