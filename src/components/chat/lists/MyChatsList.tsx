@@ -5,7 +5,11 @@ import { createChat, getUserChats } from "../../../services/chat.service";
 import MyChatsCard from "../cards/MyChatsCard";
 import CreateChatModal from "../../modals/CreateChatModal";
 
-export default function MyChatsList() {
+interface MyChatsListProps {
+  refreshTrigger?: number;
+}
+
+export default function MyChatsList({ refreshTrigger = 0 }: MyChatsListProps) {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +20,7 @@ export default function MyChatsList() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
 
   async function fetchData() {
     setLoading(true);

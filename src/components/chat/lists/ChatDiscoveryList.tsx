@@ -10,7 +10,11 @@ import { Loader2, MessageSquareOff } from "lucide-react";
 type SortOption = "date" | "name" | "users";
 type SortDirection = "asc" | "desc";
 
-export default function ChatDiscoveryList() {
+interface ChatDiscoveryListProps {
+  onChatJoined?: () => void;
+}
+
+export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListProps) {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState("");
@@ -37,16 +41,28 @@ export default function ChatDiscoveryList() {
     }
   }
 
-  function handleJoinChat(e: React.FormEvent) {
+  async function handleJoinChat(e: React.FormEvent) {
     e.preventDefault();
+
     if (!selectedChat) return;
 
-    const passwordToSend =
-      selectedChat.has_password ? chatPassword : undefined;
+    try {
+      const passwordToSend =
+        selectedChat.has_password ? chatPassword : undefined;
 
-    joinChat(selectedChat.id, passwordToSend);
-    setSelectedChat(null);
-    setChatPassword("");
+      await joinChat(selectedChat.id, passwordToSend);
+
+      await fetchData();
+
+      if (onChatJoined) {
+        onChatJoined();
+      }
+
+      setSelectedChat(null);
+      setChatPassword("");
+    } catch(err) {
+      console.error(err)
+    }
   }
 
   function enterChatAction(chat: ChatListItem) {
