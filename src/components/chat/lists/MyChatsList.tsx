@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MessageSquare, Loader2, PlusCircle } from "lucide-react";
 import { ChatListItem } from "../../../types/Chat";
-import { getUserChats } from "../../../services/chat.service";
+import { createChat, getUserChats } from "../../../services/chat.service";
 import MyChatsCard from "../cards/MyChatsCard";
 import CreateChatModal from "../../modals/CreateChatModal";
 
@@ -41,15 +41,20 @@ export default function MyChatsList() {
     setIsModalOpen(true);
   }
 
-  function handleCreateChat() {
-    console.log("Dados do novo chat:", {
-      name: chatName,
-      description: chatDescription,
-      password: chatPassword,
-    });
-    
-    setIsModalOpen(false);
-    fetchData(); 
+  async function handleCreateChat() {
+    try {
+      await createChat({
+        name: chatName,
+        description: chatDescription,
+        password: chatPassword
+      })
+
+      setIsModalOpen(false)
+      await fetchData()
+
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
