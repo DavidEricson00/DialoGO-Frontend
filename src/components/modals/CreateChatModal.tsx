@@ -56,9 +56,14 @@ export default function CreateChatModal({
           <div className="p-6 space-y-5">
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Nome do chat <span className="text-red-500">*</span>
-              </label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="block text-sm font-medium text-gray-700">
+                  Nome do chat <span className="text-red-500">*</span>
+                </label>
+                <span className="text-xs text-gray-400">
+                  ({name.length}/32)
+                </span>
+              </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
                   <MessageSquare size={18} />
@@ -67,7 +72,9 @@ export default function CreateChatModal({
                   required
                   type="text"
                   value={name}
-                  onChange={(e) => onNameChange(e.target.value)}
+                  onChange={e => {
+                    if (e.target.value.length <= 32) onNameChange(e.target.value)
+                  }}
                   placeholder="Ex: Time de Desenvolvimento"
                   className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900"
                 />
@@ -75,16 +82,23 @@ export default function CreateChatModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Descrição <span className="text-xs text-gray-400 font-normal">(Opcional)</span>
-              </label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="block text-sm font-medium text-gray-700">
+                  Descrição <span className="text-xs text-gray-400 font-normal">(Opcional)</span>
+                </label>
+                <span className="text-xs text-gray-400">
+                  ({(description || "").length}/128)
+                </span>
+              </div>
               <div className="relative group">
                 <div className="absolute top-3 left-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
                   <AlignLeft size={18} />
                 </div>
                 <textarea
                   value={description || ""}
-                  onChange={(e) => onDescriptionChange(e.target.value)}
+                  onChange={e => {
+                    if (e.target.value.length <= 128) onDescriptionChange(e.target.value)
+                  }}
                   placeholder="Sobre o que é este chat?"
                   rows={3}
                   className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 resize-none"
@@ -93,9 +107,14 @@ export default function CreateChatModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Senha de acesso <span className="text-xs text-gray-400 font-normal">(Opcional)</span>
-              </label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="block text-sm font-medium text-gray-700">
+                  Senha de acesso <span className="text-xs text-gray-400 font-normal">(Opcional)</span>
+                </label>
+                <span className="text-xs text-gray-400">
+                  ({(password || "").length}/100)
+                </span>
+              </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
                   <Lock size={18} />
@@ -103,7 +122,9 @@ export default function CreateChatModal({
                 <input
                   type="password"
                   value={password || ""}
-                  onChange={(e) => onPasswordChange(e.target.value)}
+                  onChange={e => {
+                    if (e.target.value.length <= 100) onPasswordChange(e.target.value)
+                  }}
                   placeholder="Deixe em branco para chat público"
                   className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900"
                 />
