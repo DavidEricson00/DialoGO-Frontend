@@ -56,12 +56,19 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
     onBack();
   };
 
-  const handleSendMessage = (text: string) => {
-    sendMessage({
-      chat_id: chatId,
-      content: text
-    })
-    setMessageText("");
+  const handleSendMessage = async (text: string) => {
+    if (!text.trim()) return;
+
+    try {
+      await sendMessage({
+        chat_id: chatId,
+        content: text
+      });
+      setMessageText("");
+      loadMessages();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
