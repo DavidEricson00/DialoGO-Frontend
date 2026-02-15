@@ -19,6 +19,7 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
   const [chat, setChat] = useState<ChatListItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     loadChatData();
@@ -34,6 +35,17 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
       setUsers(chatMembers);
     } catch (error) {
       console.error("Erro ao carregar dados do chat:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function loadMessges() {
+    try {
+      const response = await getChatMessages(chatId);
+      setMessages(response);
+    } catch (error) {
+      console.error("Erro ao carregar mensagens do chat:", error);
     } finally {
       setLoading(false);
     }
