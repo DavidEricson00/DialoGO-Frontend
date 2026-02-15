@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { User } from "../../types/User";
+import { Message } from "../../types/Message";
 import ChatUsersList from "./ChatUsersList";
 import { getChatById, getUsersFromChat } from "../../services/chat.service";
 import { ChatListItem } from "../../types/Chat";
 import { ChevronLeft, Hash, Loader2 } from "lucide-react";
 import ChatInput from "../layout/ChatInput";
+import { getChatMessages, sendMessage } from "../../services/message.service";
 
 type ChatViewProps = {
   chatId: string;
@@ -43,7 +45,10 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
   };
 
   const handleSendMessage = (text: string) => {
-    console.log("Enviando mensagem para o chat", chatId, ":", text);
+    sendMessage({
+      chat_id: chatId,
+      content: text
+    })
     setMessageText("");
   };
 
