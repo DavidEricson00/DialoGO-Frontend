@@ -20,7 +20,7 @@ export default function JoinChatModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <form 
         onSubmit={joinChat}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200"
       >
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
