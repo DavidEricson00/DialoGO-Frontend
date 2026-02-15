@@ -4,6 +4,7 @@ import MyChatsList from "../../components/chat/lists/MyChatsList"
 import ChatDiscoveryList from "../../components/chat/lists/ChatDiscoveryList"
 import ChatView from "../../components/chat/ChatView";
 import { useAuth } from "../../context/AuthContext"
+import { leaveChat } from "../../services/chat.service";
 
 export default function Home() {
   const { user } = useAuth(); 
@@ -20,6 +21,13 @@ export default function Home() {
 
   const handleBackToDiscovery = () => {
     setSelectedChatId(null);
+  };
+
+  const handleLeaveChat = () => {
+    if (selectedChatId) {
+      leaveChat(selectedChatId);
+      setRefreshTrigger((prev) => prev + 1);
+    }
   };
 
   return (
@@ -40,14 +48,19 @@ export default function Home() {
         </aside>
 
         <main className="flex-1 h-full overflow-y-auto">
-          <div className="max-w-full mx-auto p-8">
+          <div className="max-w-full mx-auto h-full flex flex-col">
+
             {selectedChatId ? (
               <ChatView 
                 chatId={selectedChatId}
                 onBack={handleBackToDiscovery}
+                onLeave={handleLeaveChat}
               />
             ) : (
-              <ChatDiscoveryList onChatJoined={handleChatJoined} />
+              <ChatDiscoveryList 
+              refreshTrigger={refreshTrigger} 
+              onChatJoined={handleChatJoined} 
+              />
             )}
           </div>
         </main>
