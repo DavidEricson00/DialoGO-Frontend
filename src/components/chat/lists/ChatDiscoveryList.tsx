@@ -145,16 +145,12 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
 
         <aside className="w-full lg:w-80 shrink-0 order-1 lg:order-2 lg:sticky lg:top-8">
           <ChatFilterController
-            hasPassword={!!hasPassword}
+            hasPassword={hasPassword}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSortChange={setSortBy}
             onSortDirectionChange={setSortDirection}
-            onHasPasswordToggle={() =>
-              setHasPassword(prev =>
-                prev === true ? undefined : true
-              )
-            }
+            onHasPasswordChange={setHasPassword}
             applyFilters={applyFilters}
           />
         </aside>
