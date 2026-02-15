@@ -7,9 +7,13 @@ import CreateChatModal from "../../modals/CreateChatModal";
 
 interface MyChatsListProps {
   refreshTrigger?: number;
+  onOpenChat: (id:string) => void
 }
 
-export default function MyChatsList({ refreshTrigger = 0 }: MyChatsListProps) {
+export default function MyChatsList({ 
+  refreshTrigger = 0, 
+  onOpenChat
+}: MyChatsListProps) {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +39,7 @@ export default function MyChatsList({ refreshTrigger = 0 }: MyChatsListProps) {
   }
 
   function openChatAction(id: string) {
-    console.log("Abrindo chat", id);
+    onOpenChat(id)
   }
 
   function handleOpenModal() {
