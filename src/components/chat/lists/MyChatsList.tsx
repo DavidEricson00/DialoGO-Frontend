@@ -68,7 +68,7 @@ export default function MyChatsList({
   return (
     <>
       <div className="flex flex-col h-full bg-white">
-        <div className="p-5 border-b border-gray-100 shrink-0">
+        <div className="p-10 border-b border-gray-100 shrink-0">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             <MessageSquare className="text-blue-600" size={20} />
             Meus Chats

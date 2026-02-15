@@ -61,10 +61,10 @@ export default function ChatUsersList({
         </div>
       </div>
 
-      <div className="p-4 border-t border-gray-100 shrink-0 bg-gray-50/50">
+      <div className="p-4 border-t-2 border-gray-200 shrink-0 bg-gray-50/50">
         <button
           onClick={onLeaveChat}
-          className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition-all active:scale-[0.98]"
+          className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-200 hover:bg-red-300 text-red-600 font-bold rounded-xl transition-all active:scale-[0.98]"
         >
           <LogOut size={18} />
           Sair do chat
