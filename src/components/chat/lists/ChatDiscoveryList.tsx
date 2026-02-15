@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { ChatSearchBar } from "../../layout/ChatSearchBar";
 import ChatFilterController from "../../layout/ChatFilterController";
 import { ChatListItem } from "../../../types/Chat";
-import { getAvailableChats, joinChat } from "../../../services/chat.service";
+import { getAvailableChats, joinChat, GetChatsFilters } from "../../../services/chat.service";
 import ChatDiscoveryCard from "../cards/ChatDiscoveryCard";
 import JoinChatModal from "../../modals/JoinChatModal";
 import { Loader2, MessageSquareOff } from "lucide-react";
 
-type SortOption = "date" | "name" | "users";
 type SortDirection = "asc" | "desc";
 
 interface ChatDiscoveryListProps {
@@ -17,9 +16,10 @@ interface ChatDiscoveryListProps {
 export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListProps) {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [text, setText] = useState("");
-  const [hasPassword, setHasPassword] = useState(false);
-  const [sortBy, setSortBy] = useState<SortOption>("date");
+  const [hasPassword, setHasPassword] = useState<boolean | undefined>(undefined);
+  const [sortBy, setSortBy] = useState<GetChatsFilters["order"]>("created_at");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   const [selectedChat, setSelectedChat] = useState<ChatListItem | null>(null);
@@ -29,10 +29,19 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
     fetchData();
   }, []);
 
-  async function fetchData() {
+  function buildFilters(): GetChatsFilters {
+    return {
+      search: text || undefined,
+      order: sortBy,
+      direction: sortDirection,
+      hasPassword
+    };
+  }
+
+  async function fetchData(filters?: GetChatsFilters) {
     setLoading(true);
     try {
-      const response = await getAvailableChats();
+      const response = await getAvailableChats(filters ?? buildFilters());
       setChats(response);
     } catch (err) {
       console.error(err);
@@ -43,7 +52,6 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
 
   async function handleJoinChat(e: React.FormEvent) {
     e.preventDefault();
-
     if (!selectedChat) return;
 
     try {
@@ -54,14 +62,12 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
 
       await fetchData();
 
-      if (onChatJoined) {
-        onChatJoined();
-      }
+      onChatJoined?.();
 
       setSelectedChat(null);
       setChatPassword("");
-    } catch(err) {
-      console.error(err)
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -71,7 +77,15 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
   }
 
   function searchText(query: string) {
-    console.log("Searching:", query, { hasPassword, sortBy, sortDirection });
+    setText(query);
+    fetchData({
+      ...buildFilters(),
+      search: query || undefined
+    });
+  }
+
+  function applyFilters() {
+    fetchData(buildFilters());
   }
 
   return (
@@ -93,7 +107,13 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
               text={text}
               searchText={searchText}
               setText={setText}
-              clearSearchBar={() => setText("")}
+              clearSearchBar={() => {
+                setText("");
+                fetchData({
+                  ...buildFilters(),
+                  search: undefined
+                });
+              }}
             />
           </div>
 
@@ -125,13 +145,17 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
 
         <aside className="w-full lg:w-80 shrink-0 order-1 lg:order-2 lg:sticky lg:top-8">
           <ChatFilterController
-            hasPassword={hasPassword}
+            hasPassword={!!hasPassword}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSortChange={setSortBy}
             onSortDirectionChange={setSortDirection}
-            onHasPasswordToggle={() => setHasPassword(!hasPassword)}
-            applyFilters={() => searchText(text)}
+            onHasPasswordToggle={() =>
+              setHasPassword(prev =>
+                prev === true ? undefined : true
+              )
+            }
+            applyFilters={applyFilters}
           />
         </aside>
       </div>

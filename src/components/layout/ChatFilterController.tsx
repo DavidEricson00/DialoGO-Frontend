@@ -1,13 +1,13 @@
 import { Lock, Settings2 } from "lucide-react";
+import { GetChatsFilters } from "../../services/chat.service";
 
-type SortOption = "date" | "name" | "users";
 type SortDirection = "asc" | "desc";
 
 type ChatFilterControllerProps = {
   hasPassword: boolean;
-  sortBy: SortOption;
+  sortBy: GetChatsFilters["order"];
   sortDirection: SortDirection;
-  onSortChange: (sort: SortOption) => void;
+  onSortChange: (sort: GetChatsFilters["order"]) => void;
   onSortDirectionChange: (direction: SortDirection) => void;
   onHasPasswordToggle: () => void;
   applyFilters: () => void;
@@ -30,8 +30,14 @@ export default function ChatFilterController({
       </div>
 
       <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
-        <label htmlFor="pass-toggle" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
-          <Lock size={14} className={hasPassword ? "text-blue-600" : "text-gray-400"} />
+        <label
+          htmlFor="pass-toggle"
+          className="text-sm font-medium flex items-center gap-2 cursor-pointer"
+        >
+          <Lock
+            size={14}
+            className={hasPassword ? "text-blue-600" : "text-gray-400"}
+          />
           Apenas com senha
         </label>
         <input
@@ -45,16 +51,20 @@ export default function ChatFilterController({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col">
-          <span className="text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Ordenar por</span>
+          <span className="text-xs font-bold text-gray-500 uppercase mb-1 ml-1">
+            Ordenar por
+          </span>
           <div className="relative">
             <select
               value={sortBy}
-              onChange={(e) => onSortChange(e.target.value as SortOption)}
+              onChange={(e) =>
+                onSortChange(e.target.value as GetChatsFilters["order"])
+              }
               className="appearance-none w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
             >
-              <option value="date">Data</option>
+              <option value="created_at">Data</option>
               <option value="name">Nome</option>
-              <option value="users">Usuários</option>
+              <option value="users_count">Usuários</option>
             </select>
             <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-[10px]">
               ▼
@@ -63,11 +73,15 @@ export default function ChatFilterController({
         </div>
 
         <div className="flex flex-col">
-          <span className="text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Direção</span>
+          <span className="text-xs font-bold text-gray-500 uppercase mb-1 ml-1">
+            Direção
+          </span>
           <div className="relative">
             <select
               value={sortDirection}
-              onChange={(e) => onSortDirectionChange(e.target.value as SortDirection)}
+              onChange={(e) =>
+                onSortDirectionChange(e.target.value as SortDirection)
+              }
               className="appearance-none w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
             >
               <option value="asc">Crescente</option>
