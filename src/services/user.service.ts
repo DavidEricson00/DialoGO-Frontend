@@ -91,3 +91,13 @@ export async function updateUser(
 
     return result;
 }
+
+export async function getUserById(id: string): Promise<User> {
+    const response = await authFetch(`${API_URL}/user/${id}`)
+
+    if (!response.ok) {
+        throw new Error("Usuário não encontrado")
+    }
+
+    return response.json()
+}
