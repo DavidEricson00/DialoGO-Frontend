@@ -20,7 +20,7 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
   const [text, setText] = useState("");
   const [hasPassword, setHasPassword] = useState<boolean | undefined>(undefined);
   const [sortBy, setSortBy] = useState<GetChatsFilters["order"]>("created_at");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const [selectedChat, setSelectedChat] = useState<ChatListItem | null>(null);
   const [chatPassword, setChatPassword] = useState("");
