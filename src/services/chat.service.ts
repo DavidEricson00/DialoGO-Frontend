@@ -81,7 +81,7 @@ export async function getUserChats(
 
 export async function getChatById(
   chatId: string
-): Promise<ChatDetail> {
+): Promise<ChatListItem> {
   const response = await authFetch(`${API_URL}/chat/${chatId}`, {
     method: "GET"
   })

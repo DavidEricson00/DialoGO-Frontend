@@ -8,6 +8,7 @@ export type ChatBase = {
 export type ChatListItem = ChatBase & {
   users_count: number
   has_password: boolean
+  owner_id: string
 }
 
 export type ChatDetail = ChatBase & {
