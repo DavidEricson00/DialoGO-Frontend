@@ -7,6 +7,7 @@ import { ChatListItem } from "../../types/Chat";
 import { ChevronLeft, Hash, Loader2 } from "lucide-react";
 import ChatInput from "../layout/ChatInput";
 import { getChatMessages, sendMessage } from "../../services/message.service";
+import ChatMessage from "./ChatMessage";
 
 type ChatViewProps = {
   chatId: string;
@@ -23,6 +24,7 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
 
   useEffect(() => {
     loadChatData();
+    loadMessages();
   }, [chatId]);
 
   async function loadChatData() {
@@ -34,20 +36,18 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
       setChat(chatData);
       setUsers(chatMembers);
     } catch (error) {
-      console.error("Erro ao carregar dados do chat:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
-  async function loadMessges() {
+  async function loadMessages() {
     try {
       const response = await getChatMessages(chatId);
       setMessages(response);
     } catch (error) {
-      console.error("Erro ao carregar mensagens do chat:", error);
-    } finally {
-      setLoading(false);
+      console.error(error);
     }
   }
 
@@ -91,7 +91,7 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
               </div>
               
               <div className="flex flex-col min-w-0">
-                {loading ? (
+                {loading && !chat ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="animate-spin text-blue-600" size={16} />
                     <span className="text-sm font-medium text-gray-400">Sincronizando...</span>
@@ -115,7 +115,7 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
         <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar flex flex-col">
           <div className="flex-1" />
 
-          {!loading && users.length > 0 && (
+          {!loading && messages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-10 opacity-60">
               <div className="px-4 py-1.5 bg-gray-200 text-gray-600 text-[11px] font-bold uppercase tracking-widest rounded-full mb-4">
                 Início da conversa
@@ -126,7 +126,11 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
             </div>
           )}
 
-          {/* mensagens */}
+          <div className="flex flex-col gap-1">
+            {messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))}
+          </div>
         </div>
 
         <div className="bg-white border-t border-gray-200">
