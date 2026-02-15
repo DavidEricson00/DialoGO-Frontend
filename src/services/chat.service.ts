@@ -1,4 +1,5 @@
 import { ChatListItem, ChatDetail } from "../types/Chat"
+import { User } from "../types/User"
 import { authFetch } from "./authFetch.service"
 
 const API_URL = "http://localhost:3000"
@@ -145,4 +146,16 @@ export async function leaveChat(chatId: string): Promise<void> {
   if (!response.ok) {
     throw new Error("Erro ao sair do chat")
   }
+}
+
+export async function getUsersFromChat(chatId:string): Promise<User[]> {
+  const response = await authFetch(`${API_URL}/chat/${chatId}/users`, {
+    method: "GET"
+  })
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar usuários")
+  }
+
+  return response.json()
 }
