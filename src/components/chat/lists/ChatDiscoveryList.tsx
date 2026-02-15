@@ -10,10 +10,14 @@ import { Loader2, MessageSquareOff } from "lucide-react";
 type SortDirection = "asc" | "desc";
 
 interface ChatDiscoveryListProps {
+  refreshTrigger?: number;
   onChatJoined?: () => void;
 }
 
-export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListProps) {
+export default function ChatDiscoveryList({ 
+  refreshTrigger = 0,
+  onChatJoined
+}: ChatDiscoveryListProps) {
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +31,7 @@ export default function ChatDiscoveryList({ onChatJoined }: ChatDiscoveryListPro
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
 
   function buildFilters(): GetChatsFilters {
     return {
