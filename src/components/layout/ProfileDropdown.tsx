@@ -1,14 +1,16 @@
-import { LogOut, Image, UserPen } from "lucide-react";
+import { LogOut, Image, UserPen, Lock } from "lucide-react";
 
 type ProfileDropdownProps = {
     onChangeUsername: () => void;
     onChangeAvatar: () => void;
+    onChangePassword: () => void;
     onLogout: () => void;
 };
 
 export default function ProfileDropdown({
     onChangeUsername,
     onChangeAvatar,
+    onChangePassword,
     onLogout,
 }: ProfileDropdownProps) {
     return (
@@ -31,6 +33,16 @@ export default function ProfileDropdown({
                         <Image size={16} />
                     </div>
                     Alterar avatar
+                </button>
+
+                <button 
+                    onClick={onChangePassword} 
+                    className="cursor-pointer w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                    <div className="p-1.5 bg-blue-100 text-blue-600 rounded-md">
+                        <Lock size={16} />
+                    </div>
+                    Alterar Senha
                 </button>
             </div>
             

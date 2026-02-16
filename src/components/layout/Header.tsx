@@ -7,6 +7,7 @@ import ChangeUsernameModal from "../modals/ChangeUsernameModal";
 import { AvatarType } from "../../types/AvatarType";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import ChangePasswordModal from "../modals/ChangePasswordModal";
 
 type HeaderProps = {
   user: User;
@@ -20,6 +21,10 @@ export default function Header({ user }: HeaderProps) {
 
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [newUsername, setNewUsername] = useState(user.username);
+  
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
 
   const { logout, updateUserProfile } = useAuth();
   const navigate = useNavigate();
@@ -41,6 +46,11 @@ export default function Header({ user }: HeaderProps) {
   function handleOpenAvatarModal() {
     setIsDropdownOpen(false);
     setIsAvatarModalOpen(true);
+  }
+
+  function handleOpenPasswordModal() {
+    setIsDropdownOpen(false);
+    setIsPasswordModalOpen(true);
   }
   
   function handleLogout() {
@@ -73,6 +83,10 @@ export default function Header({ user }: HeaderProps) {
         setIsAvatarModalOpen(false);
       }
     }
+
+  function handleUpdatePassword() {
+    console.log("Senha antiga:", currentPassword, "Senha nova:", newPassword)
+  }
 
   return (
     <>
@@ -107,6 +121,7 @@ export default function Header({ user }: HeaderProps) {
             <ProfileDropdown
               onChangeUsername={handleOpenUsernameModal}
               onChangeAvatar={handleOpenAvatarModal}
+              onChangePassword={handleOpenPasswordModal}
               onLogout={handleLogout}
             />
           )}
@@ -127,6 +142,16 @@ export default function Header({ user }: HeaderProps) {
         username={newUsername}
         onUsernameChange={setNewUsername}
         changeUsername={handleUpdateUsername}
+      />
+
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        currentPassword={currentPassword}
+        onCurrentPasswordChange={setCurrentPassword}
+        newPassword={newPassword}
+        onNewPasswordChange={setNewPassword}
+        changePassword={handleUpdatePassword}
       />
     </>
   );
