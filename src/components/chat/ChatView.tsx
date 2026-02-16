@@ -25,6 +25,16 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   useEffect(() => {
     loadChatData();
     loadMessages();
@@ -152,6 +162,8 @@ export default function ChatView({ chatId, onBack, onLeave }: ChatViewProps) {
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
+
+            <div ref={messagesEndRef} />
           </div>
         </div>
 
