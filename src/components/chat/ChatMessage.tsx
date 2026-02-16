@@ -48,9 +48,6 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             src={avatarSrc} 
             alt={user?.username || "Usuário"} 
             className="w-10 h-10 rounded-full object-cover border border-gray-200"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/path/to/default-avatar.png'; 
-            }}
           />
         )}
       </div>
