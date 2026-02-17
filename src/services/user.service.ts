@@ -11,9 +11,10 @@ type LoginPayload = {
 }
 
 type UpdateUserPayload = {
-    username?: string
-    password?: string
-    avatar?: AvatarType
+  username?: string
+  avatar?: AvatarType
+  currentPassword?: string
+  newPassword?: string
 }
 
 type CreateUserPayload = {
@@ -75,14 +76,20 @@ export async function getMe(): Promise<User> {
 export async function updateUser(
     user: UpdateUserPayload
 ): Promise<User> {
+
     const response = await authFetch(`${API_URL}/user`, {
         method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             username: user.username,
-            password: user.password,
-            avatar: user.avatar
+            avatar: user.avatar,
+            currentPassword: user.currentPassword,
+            newPassword: user.newPassword
         })
     });
+
     const result = await response.json();
 
     if (!response.ok) {
