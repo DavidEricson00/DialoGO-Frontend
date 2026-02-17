@@ -84,8 +84,17 @@ export default function Header({ user }: HeaderProps) {
       }
     }
 
-  function handleUpdatePassword() {
-    console.log("Senha antiga:", currentPassword, "Senha nova:", newPassword)
+  async function handleUpdatePassword() {
+    try {
+      await updateUserProfile({
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsPasswordModalOpen(false);
+    }
   }
 
   return (

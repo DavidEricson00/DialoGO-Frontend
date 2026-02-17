@@ -5,8 +5,9 @@ import { AvatarType } from "../types/AvatarType"
 
 type UpdateUserPayload = {
     username?: string
-    password?: string
     avatar?: AvatarType
+    currentPassword?: string
+    newPassword?: string
 }
 
 type AuthContextType = {
