@@ -37,7 +37,8 @@ export async function createChat(
   })
 
   if (!response.ok) {
-    throw new Error("Erro ao criar chat")
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Erro ao criar chat");
   }
 
   return response.json()
