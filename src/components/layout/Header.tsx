@@ -50,6 +50,8 @@ export default function Header({ user }: HeaderProps) {
 
   function handleOpenPasswordModal() {
     setIsDropdownOpen(false);
+    setCurrentPassword("");
+    setNewPassword("");
     setIsPasswordModalOpen(true);
   }
   
@@ -75,26 +77,19 @@ export default function Header({ user }: HeaderProps) {
     try {
         await updateUserProfile({
           avatar: selectedAvatar
-        })
-
+        });
       } catch(err){
-        console.log(err)
+        console.log(err);
       } finally {
         setIsAvatarModalOpen(false);
       }
     }
 
-  async function handleUpdatePassword() {
-    try {
-      await updateUserProfile({
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsPasswordModalOpen(false);
-    }
+  async function handleUpdatePassword(currentPass: string, newPass: string) {
+    await updateUserProfile({
+      currentPassword: currentPass,
+      newPassword: newPass,
+    });
   }
 
   return (

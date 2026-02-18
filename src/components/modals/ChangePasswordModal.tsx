@@ -1,4 +1,4 @@
-import { X, Save, Lock, AlertCircle, KeyRound } from "lucide-react";
+import { X, Save, Lock, AlertCircle, KeyRound, Eye, EyeOff, CheckCircle } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 type ChangePasswordModalProps = {
@@ -8,7 +8,7 @@ type ChangePasswordModalProps = {
   onCurrentPasswordChange: (value: string) => void;
   newPassword: string;
   onNewPasswordChange: (value: string) => void;
-  changePassword: () => void;
+  changePassword: (currentPass: string, newPass: string) => Promise<void>;
 };
 
 export default function ChangePasswordModal({
@@ -22,7 +22,12 @@ export default function ChangePasswordModal({
 }: ChangePasswordModalProps) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     if (confirmPassword && newPassword !== confirmPassword) {
@@ -32,11 +37,23 @@ export default function ChangePasswordModal({
     }
   }, [newPassword, confirmPassword]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setConfirmPassword("");
+      setError(null);
+      setSuccess(null);
+      setShowCurrent(false);
+      setShowNew(false);
+      setShowConfirm(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
 
     if (newPassword !== confirmPassword) {
       setError("As senhas não coincidem.");
@@ -51,8 +68,11 @@ export default function ChangePasswordModal({
     setIsLoading(true);
 
     try {
-      await changePassword();
-      onClose();
+      await changePassword(currentPassword, newPassword);
+      setSuccess("Senha alterada com sucesso!");
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (err: any) {
       const message = err.response?.data?.message || err.message || "Erro ao alterar a senha.";
       setError(message);
@@ -68,7 +88,6 @@ export default function ChangePasswordModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
-        
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Alterar Senha</h2>
@@ -85,7 +104,6 @@ export default function ChangePasswordModal({
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="p-6 space-y-4">
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Senha antiga
@@ -95,12 +113,19 @@ export default function ChangePasswordModal({
                   <KeyRound size={20} />
                 </div>
                 <input
-                  type="password"
+                  type={showCurrent ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => onCurrentPasswordChange(e.target.value)}
                   placeholder="Digite sua senha atual"
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder:text-gray-400"
+                  className="w-full pl-10 pr-12 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder:text-gray-400"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrent(!showCurrent)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                >
+                  {showCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
@@ -113,13 +138,20 @@ export default function ChangePasswordModal({
                   <Lock size={20} />
                 </div>
                 <input
-                  type="password"
+                  type={showNew ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => handleInputChange(e.target.value)}
                   placeholder="Sua nova senha"
                   maxLength={20}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder:text-gray-400"
+                  className="w-full pl-10 pr-12 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder:text-gray-400"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowNew(!showNew)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                >
+                  {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
@@ -132,13 +164,20 @@ export default function ChangePasswordModal({
                   <Lock size={20} />
                 </div>
                 <input
-                  type="password"
+                  type={showConfirm ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirme a nova senha"
                   maxLength={20}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder:text-gray-400"
+                  className="w-full pl-10 pr-12 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder:text-gray-400"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                >
+                  {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
@@ -146,6 +185,13 @@ export default function ChangePasswordModal({
               <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 text-sm font-medium rounded-lg animate-in slide-in-from-top-1 duration-200 border border-red-100">
                 <AlertCircle size={16} className="shrink-0" />
                 <span>{error}</span>
+              </div>
+            )}
+
+            {success && (
+              <div className="flex items-center gap-2 p-3 bg-green-50 text-green-700 text-sm font-medium rounded-lg animate-in slide-in-from-top-1 duration-200 border border-green-100">
+                <CheckCircle size={16} className="shrink-0" />
+                <span>{success}</span>
               </div>
             )}
           </div>
@@ -162,7 +208,7 @@ export default function ChangePasswordModal({
             <button
               type="submit"
               className="cursor-pointer flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!currentPassword || !newPassword || !confirmPassword || isLoading || !!error}
+              disabled={!currentPassword || !newPassword || !confirmPassword || isLoading || !!success}
             >
               {isLoading ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -173,7 +219,6 @@ export default function ChangePasswordModal({
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );
