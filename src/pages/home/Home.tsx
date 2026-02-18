@@ -4,7 +4,7 @@ import MyChatsList from "../../components/chat/lists/MyChatsList"
 import ChatDiscoveryList from "../../components/chat/lists/ChatDiscoveryList"
 import ChatView from "../../components/chat/ChatView";
 import { useAuth } from "../../context/AuthContext"
-import { leaveChat } from "../../services/chat.service";
+import { leaveChat, deleteChat } from "../../services/chat.service";
 
 export default function Home() {
   const { user } = useAuth(); 
@@ -23,10 +23,27 @@ export default function Home() {
     setSelectedChatId(null);
   };
 
-  const handleLeaveChat = () => {
+  const handleLeaveChat = async () => {
     if (selectedChatId) {
-      leaveChat(selectedChatId);
-      setRefreshTrigger((prev) => prev + 1);
+      try {
+        await leaveChat(selectedChatId);
+        setRefreshTrigger((prev) => prev + 1);
+        handleBackToDiscovery();
+      } catch (error) {
+        console.error("Erro ao sair do chat", error);
+      }
+    }
+  };
+
+  const handleDeleteChat = async () => {
+    if (selectedChatId) {
+      try {
+        await deleteChat(selectedChatId);
+        setRefreshTrigger((prev) => prev + 1);
+        handleBackToDiscovery();
+      } catch (error) {
+        alert("Erro ao excluir o chat.");
+      }
     }
   };
 
@@ -41,7 +58,7 @@ export default function Home() {
       <div className="flex-1 flex pt-20 overflow-hidden">
         
         <aside className="hidden lg:block w-80 h-full border-r border-gray-200 bg-white shrink-0">
-          <MyChatsList 
+          < MyChatsList 
           refreshTrigger={refreshTrigger} 
           onOpenChat={handleOpenChat}
           />
@@ -55,6 +72,7 @@ export default function Home() {
                 chatId={selectedChatId}
                 onBack={handleBackToDiscovery}
                 onLeave={handleLeaveChat}
+                onDelete={handleDeleteChat}
               />
             ) : (
               <ChatDiscoveryList 
