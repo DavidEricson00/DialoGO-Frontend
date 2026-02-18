@@ -50,19 +50,13 @@ export default function MyChatsList({
   }
 
   async function handleCreateChat() {
-    try {
-      await createChat({
-        name: chatName,
-        description: chatDescription,
-        password: chatPassword
-      })
-
-      setIsModalOpen(false)
-      await fetchData()
-
-    } catch (err) {
-      console.error(err)
-    }
+    await createChat({
+      name: chatName,
+      description: chatDescription,
+      password: chatPassword
+    })
+    
+    await fetchData()
   }
 
   return (
