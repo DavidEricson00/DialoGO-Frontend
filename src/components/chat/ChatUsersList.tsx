@@ -1,6 +1,7 @@
 import { Users, LogOut, Loader2, Trash2 } from "lucide-react";
 import { User } from "../../types/User";
 import { getAvatarPath } from "../../utils/getAvatarPath";
+import { useAuth } from "../../context/AuthContext";
 
 interface ChatUsersListProps {
   users: User[];
@@ -19,26 +20,38 @@ export default function ChatUsersList({
   isOwner,
   ownerId,
 }: ChatUsersListProps) {
+  const { user: currentUser } = useAuth();
   const owner = users.find((u) => String(u.id) === String(ownerId));
   const members = users.filter((u) => String(u.id) !== String(ownerId));
 
-  const UserItem = ({ user }: { user: User; showCrown?: boolean }) => (
-    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-      <div className="relative shrink-0">
-        <img
-          src={getAvatarPath(user.avatar) || "/default-avatar.png"}
-          alt={user.username}
-          className="w-10 h-10 rounded-full object-cover border-2 border-transparent group-hover:border-blue-100 transition-all"
-        />
-      </div>
+  const UserItem = ({ user }: { user: User }) => {
+    const isMe = String(currentUser?.id) === String(user.id);
 
-      <div className="flex flex-col min-w-0">
-        <span className="text-sm font-semibold text-gray-700 truncate">
-          {user.username}
-        </span>
+    return (
+      <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
+        <div className="relative shrink-0">
+          <img
+            src={getAvatarPath(user.avatar) || "/default-avatar.png"}
+            alt={user.username}
+            className="w-10 h-10 rounded-full object-cover border-2 border-transparent group-hover:border-blue-100 transition-all"
+          />
+        </div>
+
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-700 truncate">
+              {user.username}
+            </span>
+            {isMe && (
+              <span className="text-[9px] font-bold bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">
+                (Você)
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="flex flex-col h-full bg-white border-l border-gray-100">
@@ -64,7 +77,7 @@ export default function ChatUsersList({
               {owner && (
                 <div>
                   <h3 className="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Anfitrião</h3>
-                  <UserItem user={owner} showCrown />
+                  <UserItem user={owner} />
                 </div>
               )}
 

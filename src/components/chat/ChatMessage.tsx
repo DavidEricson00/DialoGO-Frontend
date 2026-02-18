@@ -4,12 +4,14 @@ import { User } from "../../types/User";
 import { getUserById } from "../../services/user.service";
 import { getAvatarPath } from "../../utils/getAvatarPath";
 import { AvatarType } from "../../types/AvatarType";
+import { useAuth } from "../../context/AuthContext";
 
 interface ChatMessageProps {
   message: Message;
 }
 
 export default function ChatMessage({ message }: ChatMessageProps) {
+  const { user: currentUser } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,7 +38,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   }, [message.user_id]);
 
   const formattedTime = new Date(message.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const avatarSrc = getAvatarPath(user?.avatar ?? AvatarType.avatar_1);
+  const avatarSrc = getAvatarPath(user?.avatar ?? AvatarType.avatar_1);
+  
+  const isMe = String(currentUser?.id) === String(message.user_id);
 
   return (
     <div className="flex gap-4 p-4 hover:bg-gray-50 transition-colors rounded-lg w-full">
@@ -57,9 +61,16 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           {isLoading ? (
              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
           ) : (
-             <h3 className="font-semibold text-gray-900 text-sm">
-                {user?.username || "Usuário Desconhecido"}
-             </h3>
+             <div className="flex items-center gap-1.5">
+               <h3 className="font-semibold text-gray-900 text-sm">
+                 {user?.username || "Usuário Desconhecido"}
+               </h3>
+               {isMe && (
+                 <span className="text-[10px] font-bold bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                   (Você)
+                 </span>
+               )}
+             </div>
           )}
           
           <span className="text-xs text-gray-400 select-none">
