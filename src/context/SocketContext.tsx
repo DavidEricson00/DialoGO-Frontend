@@ -5,11 +5,13 @@ const SOCKET_URL = "http://localhost:3000";
 
 const SocketContext = createContext<Socket | null>(null);
 
+import { useAuth } from "../context/AuthContext";
+
 export function SocketProvider({ children }: { children: React.ReactNode }) {
+  const { token } = useAuth();
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) return;
 
     const newSocket = io(SOCKET_URL, {
@@ -22,7 +24,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     return () => {
       newSocket.disconnect();
     };
-  }, []);
+  }, [token]);
 
   return (
     <SocketContext.Provider value={socket}>
